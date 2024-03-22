@@ -19,7 +19,9 @@ router.post(
     .withMessage('パスワードは8文字以上である必要があります'),
   body('confirmPassword')
     .isLength({ min: 8 })
-    .withMessage('確認用パスワードは8文字以上である必要があります'),
+    .withMessage('確認用パスワードは8文字以上である必要があります')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('確認用パスワードが一致しません'),
   body('username').custom(async (value) => {
     const existingUser = await User.findOne({ username: value });
     if (existingUser) {
