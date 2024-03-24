@@ -3,17 +3,28 @@ require('dotenv').config();
 const User = require('../models/user');
 
 //クライアントから渡されたJWTが正常か検証
+// const tokenDecode = (req) => {
+//   const bearerHeader = req.headers['authorization'];
+//   if (bearerHeader) {
+//     const bearer = bearerHeader.split(' ')[1];
+//     try {
+//       const decodedToken = JWT.verify(bearer, process.env.TOKEN_SECRET_KEY);
+//       return decodedToken;
+//     } catch {
+//       return false;
+//     }
+//   } else {
+//     return false;
+//   }
+// };
+
+//クライアントから渡されたJWTが正常か検証（cookieを使用）
 const tokenDecode = (req) => {
-  const bearerHeader = req.headers['authorization'];
-  if (bearerHeader) {
-    const bearer = bearerHeader.split(' ')[1];
-    try {
-      const decodedToken = JWT.verify(bearer, process.env.TOKEN_SECRET_KEY);
-      return decodedToken;
-    } catch {
-      return false;
-    }
-  } else {
+  try {
+    const cookie = req.cookies.token;
+    const decodedToken = JWT.verify(cookie, process.env.TOKEN_SECRET_KEY);
+    return decodedToken;
+  } catch {
     return false;
   }
 };

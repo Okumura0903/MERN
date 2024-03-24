@@ -15,7 +15,9 @@ exports.register = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET_KEY, {
       expiresIn: '24h',
     });
-    return res.status(200).json({ user, token });
+    // return res.status(200).json({ user, token });
+    res.cookie('token', token, { httpOnly: true });
+    return res.status(201).json({ user });
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -55,7 +57,9 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET_KEY, {
       expiresIn: '24h',
     });
-    return res.status(201).json({ user, token });
+    // return res.status(201).json({ user, token });
+    res.cookie('token', token, { httpOnly: true });
+    return res.status(201).json({ user });
   } catch (err) {
     return res.status(500).json(err);
   }

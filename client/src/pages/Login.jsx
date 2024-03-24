@@ -31,11 +31,11 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const res = await authApi.login({
+      await authApi.login({
         username,
         password,
       });
-      localStorage.setItem('token', res.token);
+      // localStorage.setItem('token', res.token);
       navigate('/');
     } catch (err) {
       console.log(err);

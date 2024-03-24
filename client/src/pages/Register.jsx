@@ -42,12 +42,12 @@ const Register = () => {
 
     try {
       setLoading(true);
-      const res = await authApi.register({
+      await authApi.register({
         username,
         password,
         confirmPassword,
       });
-      localStorage.setItem('token', res.token);
+      // localStorage.setItem('token', res.token);
       navigate('/');
     } catch (err) {
       const errors = err.data.errors;

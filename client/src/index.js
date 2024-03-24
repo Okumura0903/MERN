@@ -6,8 +6,24 @@ import './index.css';
 import AuthLayout from './components/layout/AuthLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AppLayout from './components/layout/AppLayout';
+import Home from './pages/Home';
 
 const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      {
+        path: '/',
+        elemnt: <Home />,
+      },
+      // {
+      //   path: 'memo',
+      //   elemnt: <Memo />,
+      // },
+    ],
+  },
   {
     path: '/',
     element: <AuthLayout />,
