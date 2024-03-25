@@ -50,4 +50,10 @@ router.post('/verify-token', tokenHandler.verifyToken, (req, res) => {
   return res.status(200).json({ user: req.user });
 });
 
+//ログアウト
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  return res.status(200).json({});
+});
+
 module.exports = router;
