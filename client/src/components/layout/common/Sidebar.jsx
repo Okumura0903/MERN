@@ -9,22 +9,38 @@ import {
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import assets from '../../../assets';
 import authApi from '../../../api/authApi';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import memoApi from '../../../api/memoApi';
+import { setMemo } from '../../../redux/slices/memoSlice';
 
 const Sidebar = () => {
   const user = useSelector((state) => ({
     id: state.user.id,
     name: state.user.name,
   }));
+  const memos = useSelector((state) => state.memo.value);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const logout = async () => {
     await authApi.logout();
     navigate('/login');
   };
+  useEffect(() => {
+    const getMemos = async () => {
+      try {
+        const memos = await memoApi.getAll();
+        dispatch(setMemo(memos));
+      } catch (err) {
+        alert(err);
+      }
+    };
+    getMemos();
+  }, []);
   return (
     <Drawer
       container={window.document.body}
@@ -89,6 +105,18 @@ const Sidebar = () => {
             </IconButton>
           </Box>
         </ListItemButton>
+        {memos.map((memo) => (
+          <ListItemButton
+            sx={{ pl: '20px' }}
+            component={Link}
+            to={`/memo/${memo._id}}`}
+          >
+            <Typography>
+              {memo.icon}
+              {memo.title}
+            </Typography>
+          </ListItemButton>
+        ))}
       </List>
     </Drawer>
   );

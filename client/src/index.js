@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import AppLayout from './components/layout/AppLayout';
 import Home from './pages/Home';
 import store from './redux/store';
+import Memo from './pages/Memo';
 
 const router = createBrowserRouter([
   {
@@ -19,10 +20,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />,
       },
-      // {
-      //   path: 'memo',
-      //   elemnt: <Memo />,
-      // },
+      {
+        path: 'memo/:memoId',
+        element: <Memo />,
+      },
     ],
   },
   {
