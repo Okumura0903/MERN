@@ -12,16 +12,14 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import React, { useEffect, useState } from 'react';
 import assets from '../../../assets';
 import authApi from '../../../api/authApi';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import memoApi from '../../../api/memoApi';
 import { setMemo } from '../../../redux/slices/memoSlice';
 
 const Sidebar = () => {
-  const user = useSelector((state) => ({
-    id: state.user.id,
-    name: state.user.name,
-  }));
+  const params = useParams();
+  const user = useSelector((state) => state.user);
   const memos = useSelector((state) => state.memo.value);
 
   const dispatch = useDispatch();
@@ -40,7 +38,7 @@ const Sidebar = () => {
       }
     };
     getMemos();
-  }, []);
+  }, [dispatch]);
   return (
     <Drawer
       container={window.document.body}
@@ -109,7 +107,9 @@ const Sidebar = () => {
           <ListItemButton
             sx={{ pl: '20px' }}
             component={Link}
-            to={`/memo/${memo._id}}`}
+            to={`/memo/${memo._id}`}
+            key={memo._id}
+            selected={params.memoId === memo._id}
           >
             <Typography>
               {memo.icon}
