@@ -3,15 +3,21 @@ import { Box } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import memoApi from '../api/memoApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMemo } from '../redux/slices/memoSlice';
 
 const Home = () => {
+  const memos = useSelector((state) => state.memo.value);
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const createMemo = async () => {
     try {
       setLoading(true);
       const res = await memoApi.create();
-      console.log(res);
+      const newMemos = [res, ...memos];
+      dispatch(setMemo(newMemos));
       navigate(`memo/${res._id}`);
     } catch (err) {
       alert(err);

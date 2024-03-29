@@ -76,3 +76,17 @@ exports.update = async (req, res) => {
     return res.status(500).json(err);
   }
 };
+
+exports.delete = async (req, res) => {
+  try {
+    const memoId = req.params.memoId;
+    //メモの削除
+    await Memo.deleteOne({
+      user: req.user._id,
+      _id: memoId,
+    });
+    return res.status(200).json();
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
