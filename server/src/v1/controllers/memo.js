@@ -68,6 +68,7 @@ exports.update = async (req, res) => {
         $set: {
           title: req.body.title,
           description: req.body.description,
+          icon: req.body.icon,
         },
       }
     );
@@ -86,6 +87,33 @@ exports.delete = async (req, res) => {
       _id: memoId,
     });
     return res.status(200).json();
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+};
+
+exports.sort = async (req, res) => {
+  try {
+    req.body.forEach(async (memo) => {
+      await Memo.findOneAndUpdate(
+        {
+          user: req.user._id,
+          _id: memo._id,
+        },
+        {
+          $set: {
+            position: memo.position,
+          },
+        }
+      );
+    });
+    const userId = req.user._id;
+    //メモの取得
+    const memos = await Memo.find({
+      user: userId,
+    }).sort('-position');
+
+    return res.status(200).json(memos);
   } catch (err) {
     return res.status(500).json(err);
   }

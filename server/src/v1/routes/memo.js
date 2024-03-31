@@ -7,5 +7,6 @@ router.get('/', tokenHandler.verifyToken, memoController.getAll);
 router.get('/:memoId', tokenHandler.verifyToken, memoController.getMemo);
 router.put('/:memoId', tokenHandler.verifyToken, memoController.update);
 router.delete('/:memoId', tokenHandler.verifyToken, memoController.delete);
+router.patch('/sort', tokenHandler.verifyToken, memoController.sort);
 
 module.exports = router;

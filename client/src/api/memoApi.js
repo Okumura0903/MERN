@@ -6,6 +6,7 @@ const memoApi = {
   getMemo: (memoId) => axiosClient.get(`memo/${memoId}`),
   update: (memoId, params) => axiosClient.put(`memo/${memoId}`, params),
   delete: (memoId) => axiosClient.delete(`memo/${memoId}`),
+  sort: (params) => axiosClient.patch(`memo/sort`, params),
 
   // login: (params) => axiosClient.post('memo/login', params),
   // logout: () => axiosClient.post('memo/logout'),
