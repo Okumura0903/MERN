@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'react-use';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
+import StarIcon from '@mui/icons-material/Star';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import memoApi from '../api/memoApi';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -18,12 +19,14 @@ const Memo = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('');
+  const [favorite, setFavorite] = useState('');
   useEffect(() => {
     const getMemo = async () => {
       const res = await memoApi.getMemo(params.memoId);
       setTitle(res.title);
       setDescription(res.description);
       setIcon(res.icon);
+      setFavorite(res.favorite);
     };
     getMemo();
   }, [params.memoId]);
@@ -31,6 +34,13 @@ const Memo = () => {
   const updateTitle = async () => {
     try {
       const res = await memoApi.update(params.memoId, { title: title });
+      const newMemos = memos.map((memo) => {
+        if (memo._id === params.memoId) {
+          return { ...memo, title: title };
+        }
+        return memo;
+      });
+      dispatch(setMemo(newMemos));
     } catch (err) {
       alert(err);
     }
@@ -42,6 +52,13 @@ const Memo = () => {
       const res = await memoApi.update(params.memoId, {
         description: description,
       });
+      const newMemos = memos.map((memo) => {
+        if (memo._id === params.memoId) {
+          return { ...memo, description: description };
+        }
+        return memo;
+      });
+      dispatch(setMemo(newMemos));
     } catch (err) {
       alert(err);
     }
@@ -74,6 +91,21 @@ const Memo = () => {
       alert(err);
     }
   };
+  const changeFavorite = async () => {
+    try {
+      await memoApi.update(params.memoId, { favorite: !favorite });
+      const newMemos = memos.map((memo) => {
+        if (memo._id === params.memoId) {
+          return { ...memo, favorite: !favorite };
+        }
+        return memo;
+      });
+      setFavorite((prev) => !prev);
+      dispatch(setMemo(newMemos));
+    } catch (err) {
+      alert(err);
+    }
+  };
   return (
     <>
       <Box
@@ -83,8 +115,12 @@ const Memo = () => {
           width: '100%',
         }}
       >
-        <IconButton>
-          <StarBorderOutlinedIcon />
+        <IconButton onClick={changeFavorite}>
+          {favorite ? (
+            <StarIcon sx={{ color: '#f89200' }} />
+          ) : (
+            <StarBorderOutlinedIcon />
+          )}
         </IconButton>
         <IconButton variant="outlined" color="error" onClick={deleteMemo}>
           <DeleteOutlinedIcon />

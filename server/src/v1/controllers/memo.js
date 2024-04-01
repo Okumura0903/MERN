@@ -54,7 +54,6 @@ exports.update = async (req, res) => {
     if (req.body.description === '') {
       req.body.description = 'ここに自由に記入してください';
     }
-    console.log(req.body);
     //メモの更新
     const memo = await Memo.findOneAndUpdate(
       {
@@ -69,6 +68,7 @@ exports.update = async (req, res) => {
           title: req.body.title,
           description: req.body.description,
           icon: req.body.icon,
+          favorite: req.body.favorite,
         },
       }
     );
@@ -81,13 +81,29 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const memoId = req.params.memoId;
+    const deletedMemo = await Memo.findOne({
+      user: req.user._id,
+      _id: memoId,
+    });
     //メモの削除
     await Memo.deleteOne({
       user: req.user._id,
       _id: memoId,
     });
+    const updatedMemo = await Memo.updateMany(
+      {
+        user: req.user._id,
+        position: {
+          $gt: deletedMemo.position,
+        },
+      },
+      { $inc: { position: -1 } }
+    );
+
     return res.status(200).json();
   } catch (err) {
+    console.log(err);
+
     return res.status(500).json(err);
   }
 };

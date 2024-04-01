@@ -101,6 +101,9 @@ const Sidebar = () => {
       alert(err);
     }
   };
+
+  const [isOpenFavorite, setIsOpenFavorite] = useState(false);
+
   return (
     <Drawer
       container={window.document.body}
@@ -133,7 +136,7 @@ const Sidebar = () => {
           </Box>
         </ListItemButton>
         <Box sx={{ paddingTop: '10px' }}></Box>
-        <ListItemButton>
+        <ListItemButton onClick={() => setIsOpenFavorite((prev) => !prev)}>
           <Box
             sx={{
               width: '100%',
@@ -143,10 +146,27 @@ const Sidebar = () => {
             }}
           >
             <Typography variant="body2" fontWeight="700">
-              お気に入り
+              お気に入り（
+              {memos.filter((memo) => memo.favorite === true).length}）
             </Typography>
           </Box>
         </ListItemButton>
+        {isOpenFavorite &&
+          memos
+            .filter((memo) => memo.favorite === true)
+            .map((memo) => (
+              <ListItemButton
+                sx={{ pl: '20px' }}
+                component={Link}
+                to={`/memo/${memo._id}`}
+                key={memo._id}
+                selected={params.memoId === memo._id}
+              >
+                {memo.icon}
+                {memo.title}
+              </ListItemButton>
+            ))}
+
         <Box sx={{ paddingTop: '10px' }}></Box>
         <ListItemButton>
           <Box
@@ -166,20 +186,9 @@ const Sidebar = () => {
           </Box>
         </ListItemButton>
         <DndContext
-          // collisionDetection={closestCenter}
           onDragEnd={(event) => {
             dndSort(event);
           }}
-          // onDragEnd={(event) => {
-          //   const { active, over } = event;
-          //   if (over == null || active.id === over.id) {
-          //     return;
-          //   }
-          //   const oldIndex = items.findIndex((item) => item.id === active.id);
-          //   const newIndex = items.findIndex((item) => item.id === over.id);
-          //   const newItems = arrayMove(items, oldIndex, newIndex);
-          //   setItems(newItems);
-          // }}
         >
           <SortableContext items={memos.map((memo) => memo._id)}>
             {memos.map((memo) => (
